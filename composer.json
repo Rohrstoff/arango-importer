@@ -1,0 +1,6 @@
+{
+    "require": {
+        "triagens/arangodb": "^3.6",
+        "twig/twig": "3.0"
+    }
+}
