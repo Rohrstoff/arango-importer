@@ -5,7 +5,20 @@ services:
     networks:
       - backend
     volumes:
-      - ../:/var/www/html/
+      - ../:/var/www/arango-importer/
+
+  web:
+    build: './nginx/'
+    ports:
+      - '8080:80'
+    depends_on:
+      - php
+    volumes:
+      - ../:/var/www/arango-importer/
+    networks:
+      - frontend
+      - backend
+
   arangodb:
     image: arangodb/arangodb:latest
     networks:
@@ -14,17 +27,6 @@ services:
       - '8529:8529'
     environment:
       - ARANGO_ROOT_PASSWORD=test05
-  apache:
-    build: './apache/'
-    depends_on:
-      - php
-    networks:
-      - frontend
-      - backend
-    ports:
-      - '8080:80'
-    volumes:
-      - ../:/var/www/html/
 networks:
   frontend:
   backend:
