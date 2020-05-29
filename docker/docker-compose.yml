@@ -20,7 +20,7 @@ services:
       - backend
 
   arangodb:
-    image: arangodb/arangodb:latest
+    image: arangodb/arangodb:3.6
     networks:
       - backend
     ports:
