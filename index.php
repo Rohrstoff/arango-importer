@@ -12,14 +12,9 @@ $twig = new Environment($loader);
 
 $con = new ArangoConnection();
 
-$router->map('GET', '/', function () use ($twig, $con)
+$router->map('GET', '/', function () use ($twig)
 {
-	echo $twig->render( 'index.html', ['message' => $con->helloWorld()] );
-});
-
-$router->map('GET', '/hello-world', function () use ($twig, $con)
-{
-	echo 'Hello World!';
+	echo $twig->render( 'index.html' );
 });
 
 // match current request url
