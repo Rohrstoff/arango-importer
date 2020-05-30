@@ -6,7 +6,7 @@ services:
       - backend
     volumes:
       - ../:/var/www/arango-importer/
-
+      - ./php/php.ini:/usr/local/etc/php/php.ini
   web:
     build: './nginx/'
     ports:
@@ -20,13 +20,14 @@ services:
       - backend
 
   arangodb:
-    image: arangodb/arangodb:3.6
+    image: arangodb:3.6.3
     networks:
       - backend
     ports:
       - '8529:8529'
     environment:
       - ARANGO_ROOT_PASSWORD=test05
+
 networks:
   frontend:
   backend:
