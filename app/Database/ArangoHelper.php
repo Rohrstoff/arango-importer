@@ -6,12 +6,14 @@ use ArangoDBClient\Collection;
 use ArangoDBClient\CollectionHandler;
 use ArangoDBClient\Connection;
 use ArangoDBClient\ConnectionOptions;
+use ArangoDBClient\DocumentHandler;
 use ArangoDBClient\UpdatePolicy;
 
-class ArangoConnection
+class ArangoHelper
 {
 	private $connection;
 	private $collectionHandler;
+	private $documentHandler;
 
 	public function __construct()
 	{
@@ -19,7 +21,7 @@ class ArangoConnection
 			// database name
 			ConnectionOptions::OPTION_DATABASE => '_system',
 			// server endpoint to connect to
-			ConnectionOptions::OPTION_ENDPOINT => 'tcp://192.168.80.2:8529', //ip can be found using 'docker network inspect docker_backend'
+			ConnectionOptions::OPTION_ENDPOINT => 'tcp://172.22.0.3:8529', //ip can be found using 'docker network inspect docker_backend'
 			// authorization type to use (currently supported: 'Basic')
 			ConnectionOptions::OPTION_AUTH_TYPE => 'Basic',
 			// user for basic authorization
@@ -40,12 +42,8 @@ class ArangoConnection
 
 		$this->connection = new Connection( $connectionOptions );
 		$this->collectionHandler = new CollectionHandler( $this->connection );
+		$this->documentHandler = new DocumentHandler( $this->connection );
 		\ArangoDBClient\Exception::enableLogging();
-	}
-
-	public function getConnection()
-	{
-		return $this->connection;
 	}
 
 	public function createCollection($name)
@@ -54,5 +52,10 @@ class ArangoConnection
 		$collection->setName( $name );
 
 		return $this->collectionHandler->create( $collection );
+	}
+
+	public function saveDocument($collectionName, $document)
+	{
+		$this->documentHandler->save( $collectionName, $document );
 	}
 }

@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-use App\Database\ArangoConnection;
+use App\Controller\ImportController;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -10,11 +10,15 @@ $router = new AltoRouter();
 $loader = new FilesystemLoader( 'views' );
 $twig = new Environment($loader);
 
-$con = new ArangoConnection();
-
 $router->map('GET', '/', function () use ($twig)
 {
 	echo $twig->render( 'index.html' );
+});
+
+$router->map( 'POST', '/upload', function ()
+{
+	$controller = new ImportController();
+	$controller->handleUpload();
 });
 
 // match current request url

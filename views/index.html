@@ -1,1 +1,12 @@
-Message: {{ message }}
+{% extends "layout/layout.html" %} {% block content %}
+<h1 class="text-center col-12">ArangoDB Importer</h1>
+<div class="d-flex justify-content-center col-12">
+	<form method="post" action="/upload" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="jsonfile">Select Johnson File to import:</label>
+			<input type="file" class="form-control-file" id="jsonfile" name="jsonfile" />
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+</div>
+{% endblock %}
