@@ -2,7 +2,6 @@
 
 namespace App\Database;
 
-use ArangoDBClient\Collection;
 use ArangoDBClient\CollectionHandler;
 use ArangoDBClient\Connection;
 use ArangoDBClient\ConnectionOptions;
@@ -43,19 +42,21 @@ class ArangoHelper
 		$this->connection = new Connection( $connectionOptions );
 		$this->collectionHandler = new CollectionHandler( $this->connection );
 		$this->documentHandler = new DocumentHandler( $this->connection );
-		\ArangoDBClient\Exception::enableLogging();
+		//\ArangoDBClient\Exception::enableLogging();
 	}
 
 	public function createCollection($name)
 	{
-		$collection = new Collection();
-		$collection->setName( $name );
-
-		return $this->collectionHandler->create( $collection );
+		return $this->collectionHandler->create( $name );
 	}
 
-	public function saveDocument($collectionName, $document)
+	public function createEdgeCollection($name)
 	{
-		$this->documentHandler->save( $collectionName, $document );
+		return $this->collectionHandler->create( $name, ['type' => 3] );
+	}
+
+	public function saveDocument($collectionId, $document)
+	{
+		$this->documentHandler->insert( $collectionId, $document);
 	}
 }

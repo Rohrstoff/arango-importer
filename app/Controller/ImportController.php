@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Database\ArangoHelper;
-use ArangoDBClient\Document;
 
 class ImportController
 {
@@ -12,33 +11,47 @@ class ImportController
 	public function handleUpload()
 	{
 		$fileContent = json_decode(file_get_contents($_FILES['jsonfile']['tmp_name']));
+		$arango = new ArangoHelper();
 
-		$this->importVertices( json_encode($fileContent->vertices) );
-		//$this->edges = json_encode($fileContent->edges);
+		$this->importVertices( json_encode($fileContent->vertices), $arango );
+		$this->importEdges( json_encode( $fileContent->edges ), $arango );
 		echo 'Import complete';
 	}
 
-	public function importVertices($verticesAsString)
+	public function importVertices($verticesAsString, $arango)
 	{
-		$arango = new ArangoHelper();
 		$vertices = $this->prepareVertices( $verticesAsString );
-		$arango->createCollection( 'vertices' );
+		$id = $arango->createCollection( 'vertices' );
 
 		foreach ( $vertices as $vertex )
 		{
-			$document = Document::createFromArray( $vertex );
+			$vertex['_key'] = strval($vertex['_key']);
 
-			$arango->saveDocument( 'vertices', $document );
+			$arango->saveDocument( $id, $vertex );
+		}
+	}
+
+	public function importEdges($edgesAsString, $arango)
+	{
+		$edges = $this->prepareEdges($edgesAsString);
+		$id = $arango->createEdgeCollection( 'edges' );
+
+		foreach ( $edges as $edge )
+		{
+			$edge['_from'] = 'vertices/' . $edge['_from'];
+			$edge['_to'] = 'vertices/' . $edge['_to'];
+
+			$arango->saveDocument( $id, $edge );
 		}
 	}
 
 	private function prepareVertices($vertices)
 	{
-		return json_decode(str_replace( '"_id"', '"_key"', $vertices ));
+		return json_decode(str_replace( '"_id"', '"_key"', $vertices ), true);
 	}
 
-	public function getVertices()
+	private function prepareEdges($edges)
 	{
-		return $this->vertices;
+		return json_decode(str_replace(['"_id"', '"_outV"', '"_inV"'], ['"_key"', '"_from"', '"_to"'], $edges), true);
 	}
 }
