@@ -6,6 +6,8 @@ use ArangoDBClient\CollectionHandler;
 use ArangoDBClient\Connection;
 use ArangoDBClient\ConnectionOptions;
 use ArangoDBClient\DocumentHandler;
+use ArangoDBClient\Graph;
+use ArangoDBClient\GraphHandler;
 use ArangoDBClient\UpdatePolicy;
 
 class ArangoHelper
@@ -13,6 +15,7 @@ class ArangoHelper
 	private $connection;
 	private $collectionHandler;
 	private $documentHandler;
+	private $graphHandler;
 
 	public function __construct()
 	{
@@ -42,6 +45,7 @@ class ArangoHelper
 		$this->connection = new Connection( $connectionOptions );
 		$this->collectionHandler = new CollectionHandler( $this->connection );
 		$this->documentHandler = new DocumentHandler( $this->connection );
+		$this->graphHandler = new GraphHandler( $this->connection );
 		//\ArangoDBClient\Exception::enableLogging();
 	}
 
@@ -58,5 +62,10 @@ class ArangoHelper
 	public function saveDocument($collectionId, $document)
 	{
 		$this->documentHandler->insert( $collectionId, $document);
+	}
+
+	public function saveGraph(Graph $graph)
+	{
+		$this->graphHandler->createGraph( $graph );
 	}
 }

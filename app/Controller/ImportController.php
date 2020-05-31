@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Database\ArangoHelper;
+use ArangoDBClient\EdgeDefinition;
+use ArangoDBClient\Graph;
 
 class ImportController
 {
@@ -15,6 +17,9 @@ class ImportController
 
 		$this->importVertices( json_encode($fileContent->vertices), $arango );
 		$this->importEdges( json_encode( $fileContent->edges ), $arango );
+
+		$this->createGraph( $arango );
+
 		echo 'Import complete';
 	}
 
@@ -53,5 +58,13 @@ class ImportController
 	private function prepareEdges($edges)
 	{
 		return json_decode(str_replace(['"_id"', '"_outV"', '"_inV"'], ['"_key"', '"_from"', '"_to"'], $edges), true);
+	}
+
+	private function createGraph($arango)
+	{
+		$graph = new Graph();
+		$graph->set('_key', 'Graph');
+		$graph->addEdgeDefinition( new EdgeDefinition( 'edges', 'vertices', 'vertices' ) );
+		$arango->saveGraph( $graph );
 	}
 }
