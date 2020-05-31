@@ -23,13 +23,13 @@ class ArangoHelper
 			// database name
 			ConnectionOptions::OPTION_DATABASE => '_system',
 			// server endpoint to connect to
-			ConnectionOptions::OPTION_ENDPOINT => 'tcp://172.22.0.3:8529', //ip can be found using 'docker network inspect docker_backend'
+			ConnectionOptions::OPTION_ENDPOINT => 'tcp://172.18.0.2:8529', //ip can be found using 'docker network inspect docker_backend'
 			// authorization type to use (currently supported: 'Basic')
 			ConnectionOptions::OPTION_AUTH_TYPE => 'Basic',
 			// user for basic authorization
 			ConnectionOptions::OPTION_AUTH_USER => 'root',
 			// password for basic authorization
-			ConnectionOptions::OPTION_AUTH_PASSWD => 'test05',
+			ConnectionOptions::OPTION_AUTH_PASSWD => 'EDA-Camerino',
 			// connection persistence on server. can use either 'Close' (one-time connections) or 'Keep-Alive' (re-used connections)
 			ConnectionOptions::OPTION_CONNECTION => 'Keep-Alive',
 			// connect timeout in seconds
@@ -46,7 +46,6 @@ class ArangoHelper
 		$this->collectionHandler = new CollectionHandler( $this->connection );
 		$this->documentHandler = new DocumentHandler( $this->connection );
 		$this->graphHandler = new GraphHandler( $this->connection );
-		//\ArangoDBClient\Exception::enableLogging();
 	}
 
 	public function createCollection($name)
