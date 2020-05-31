@@ -19,8 +19,6 @@ class ImportController
 		$this->importEdges( json_encode( $fileContent->edges ), $arango );
 
 		$this->createGraph( $arango );
-
-		echo 'Import complete';
 	}
 
 	public function importVertices($verticesAsString, $arango)

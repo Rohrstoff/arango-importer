@@ -15,10 +15,12 @@ $router->map('GET', '/', function () use ($twig)
 	echo $twig->render( 'index.html' );
 });
 
-$router->map( 'POST', '/upload', function ()
+$router->map( 'POST', '/upload', function () use ($twig)
 {
 	$controller = new ImportController();
 	$controller->handleUpload();
+
+	echo $twig->render( 'upload.html' );
 });
 
 // match current request url
