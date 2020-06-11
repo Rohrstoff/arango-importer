@@ -8,8 +8,6 @@ use ArangoDBClient\Graph;
 
 class ImportController
 {
-	private $vertices;
-
 	public function handleUpload()
 	{
 		$fileContent = json_decode(file_get_contents($_FILES['jsonfile']['tmp_name']));
@@ -24,7 +22,7 @@ class ImportController
 	public function importVertices($verticesAsString, $arango)
 	{
 		$vertices = $this->prepareVertices( $verticesAsString );
-		$id = $arango->createCollection( 'vertices' );
+		$id = $arango->createCollection( 'devices' );
 
 		foreach ( $vertices as $vertex )
 		{
@@ -37,12 +35,12 @@ class ImportController
 	public function importEdges($edgesAsString, $arango)
 	{
 		$edges = $this->prepareEdges($edgesAsString);
-		$id = $arango->createEdgeCollection( 'edges' );
+		$id = $arango->createEdgeCollection( 'events' );
 
 		foreach ( $edges as $edge )
 		{
-			$edge['_from'] = 'vertices/' . $edge['_from'];
-			$edge['_to'] = 'vertices/' . $edge['_to'];
+			$edge['_from'] = 'devices/' . $edge['_from'];
+			$edge['_to'] = 'devices/' . $edge['_to'];
 
 			$arango->saveDocument( $id, $edge );
 		}
@@ -61,8 +59,8 @@ class ImportController
 	private function createGraph($arango)
 	{
 		$graph = new Graph();
-		$graph->set('_key', 'Graph');
-		$graph->addEdgeDefinition( new EdgeDefinition( 'edges', 'vertices', 'vertices' ) );
+		$graph->set('_key', 'iot_landscape');
+		$graph->addEdgeDefinition( new EdgeDefinition( 'events', 'devices', 'devices' ) );
 		$arango->saveGraph( $graph );
 	}
 }
