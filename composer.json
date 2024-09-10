@@ -1,7 +1,7 @@
 {
 	"require": {
 		"triagens/arangodb": "^3.6",
-		"twig/twig": "3.0",
+		"twig/twig": "3.11.1",
 		"altorouter/altorouter": "^2.0"
 	},
 	"autoload": {
